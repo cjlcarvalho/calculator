@@ -25,3 +25,8 @@ QString Result::toString() const
 {
     return QString::number(m_number, 'f');
 }
+
+void Result::turnToZero()
+{
+    m_number = 0;
+}

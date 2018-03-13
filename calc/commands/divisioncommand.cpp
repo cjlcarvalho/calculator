@@ -2,18 +2,17 @@
 #include "result.h"
 
 DivisionCommand::DivisionCommand(Result *result, double value) :
-    m_result(result),
-    m_value(value)
+    Command(result, value)
 {
 
 }
 
 void DivisionCommand::undo()
 {
-    m_result->multiply(m_value);
+    result()->multiply(value());
 }
 
 void DivisionCommand::redo()
 {
-    m_result->divide(m_value);
+    result()->divide(value());
 }

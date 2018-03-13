@@ -2,18 +2,17 @@
 #include "result.h"
 
 SumCommand::SumCommand(Result *result, double value) :
-    m_result(result),
-    m_value(value)
+    Command(result, value)
 {
 
 }
 
 void SumCommand::undo()
 {
-    m_result->add(-m_value);
+    result()->add(-value());
 }
 
 void SumCommand::redo()
 {
-    m_result->add(m_value);
+    result()->add(value());
 }

@@ -9,6 +9,7 @@ class MainWindow;
 
 class Result;
 class CommandStack;
+class SessionLoader;
 
 class MainWindow : public QMainWindow
 {
@@ -26,15 +27,18 @@ public slots:
     void executarMultiplicacao();
     void undoOperation();
     void redoOperation();
+    void loadSession();
 
 private:
     void init();
     bool checarValorAtual();
+    void closeEvent(QCloseEvent *event);
 
 private:
     Ui::MainWindow *ui;
     Result *m_result;
     CommandStack *m_commandStack;
+    SessionLoader *m_sessionLoader;
 
 };
 

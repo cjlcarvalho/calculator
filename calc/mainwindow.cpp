@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "result.h"
+#include "sessionloader.h"
 #include "commands/command.h"
 #include "commands/commandstack.h"
 #include "commands/sumcommand.h"
@@ -14,7 +15,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     m_result(new Result(0.0)),
-    m_commandStack(new CommandStack)
+    m_commandStack(new CommandStack),
+    m_sessionLoader(new SessionLoader("session.json"))
 {
     ui->setupUi(this);
     init();
@@ -51,6 +53,10 @@ void MainWindow::init()
 
     connect(ui->botaoUndo, &QPushButton::clicked, this, &MainWindow::undoOperation);
     connect(ui->botaoRedo, &QPushButton::clicked, this, &MainWindow::redoOperation);
+
+    connect(ui->botaoSession, &QPushButton::clicked, this, &MainWindow::loadSession);
+
+    ui->botaoSession->setEnabled(m_sessionLoader->isSessionAvailable());
 }
 
 void MainWindow::adicionarValor()
@@ -173,4 +179,24 @@ void MainWindow::redoOperation()
     }
 
     ui->resultado->setText(m_result->toString());
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    m_sessionLoader->saveSession(m_commandStack);
+
+    QWidget::closeEvent(event);
+}
+
+void MainWindow::loadSession()
+{
+    m_sessionLoader->loadSession(m_result, m_commandStack);
+
+    // m_commandStack top is set to 0
+    // so, do redoCommand until the end of m_commandStack
+    while (m_commandStack->redoCommand()) { }
+
+    ui->resultado->setText(m_result->toString());
+
+    ui->botaoSession->setEnabled(false);
 }

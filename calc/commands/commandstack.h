@@ -12,6 +12,9 @@ public:
     void addCommand(Command *command);
     bool undoCommand();
     bool redoCommand();
+    QList<Command *> commands() const;
+    void clear();
+    void backToStart();
 
 private:
     QList<Command *> m_commands;

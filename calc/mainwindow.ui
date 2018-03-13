@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>260</width>
-    <height>338</height>
+    <width>442</width>
+    <height>435</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,7 +15,7 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0" colspan="2">
+    <item row="0" column="0">
      <widget class="QLabel" name="label">
       <property name="text">
        <string>Resultado:</string>
@@ -29,7 +29,7 @@
       </property>
      </widget>
     </item>
-    <item row="2" column="0" colspan="2">
+    <item row="2" column="0">
      <widget class="QLabel" name="label_2">
       <property name="text">
        <string>Valor atual:</string>
@@ -89,13 +89,6 @@
      <widget class="QPushButton" name="botao6">
       <property name="text">
        <string>6</string>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="3" colspan="2">
-     <widget class="QPushButton" name="botaoRedo">
-      <property name="text">
-       <string>Redo</string>
       </property>
      </widget>
     </item>
@@ -162,6 +155,20 @@
       </property>
      </widget>
     </item>
+    <item row="8" column="0" colspan="5">
+     <widget class="QPushButton" name="botaoSession">
+      <property name="text">
+       <string>Restore Last Session</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="3" colspan="2">
+     <widget class="QPushButton" name="botaoRedo">
+      <property name="text">
+       <string>Redo</string>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -169,8 +176,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>260</width>
-     <height>22</height>
+     <width>442</width>
+     <height>23</height>
     </rect>
    </property>
   </widget>

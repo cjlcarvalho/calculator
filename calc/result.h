@@ -11,6 +11,7 @@ public:
     void multiply(double value);
     void divide(double value);
     QString toString() const;
+    void turnToZero();
 
 private:
     double m_number;

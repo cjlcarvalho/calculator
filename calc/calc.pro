@@ -30,7 +30,9 @@ SOURCES += \
     commands/sumcommand.cpp \
     commands/commandstack.cpp \
     commands/divisioncommand.cpp \
-    commands/multiplicationcommand.cpp
+    commands/multiplicationcommand.cpp \
+    sessionloader.cpp \
+    commands/command.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -39,7 +41,8 @@ HEADERS += \
     commands/sumcommand.h \
     commands/commandstack.h \
     commands/divisioncommand.h \
-    commands/multiplicationcommand.h
+    commands/multiplicationcommand.h \
+    sessionloader.h
 
 FORMS += \
         mainwindow.ui
