@@ -5,7 +5,6 @@
 #include "commands/command.h"
 #include "commands/commandstack.h"
 #include "commands/sumcommand.h"
-#include "commands/divisioncommand.h"
 #include "commands/multiplicationcommand.h"
 
 #include <QDebug>
@@ -125,7 +124,7 @@ void MainWindow::executarDivisao()
 
     ui->resultado->setText(m_result->toString());
 
-    m_commandStack->addCommand(new DivisionCommand(m_result, numValorAtual));
+    m_commandStack->addCommand(new MultiplicationCommand(m_result, 1 / numValorAtual));
 }
 
 void MainWindow::executarMultiplicacao()

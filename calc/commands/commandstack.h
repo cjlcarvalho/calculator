@@ -9,6 +9,7 @@ class CommandStack
 {
 public:
     CommandStack();
+    ~CommandStack();
     void addCommand(Command *command);
     bool undoCommand();
     bool redoCommand();

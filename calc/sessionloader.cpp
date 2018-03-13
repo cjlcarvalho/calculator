@@ -4,7 +4,6 @@
 #include "commands/commandstack.h"
 #include "commands/sumcommand.h"
 #include "commands/multiplicationcommand.h"
-#include "commands/divisioncommand.h"
 
 #include <QCoreApplication>
 #include <QDebug>
@@ -59,8 +58,6 @@ void SessionLoader::loadSession(Result *result, CommandStack *commandStack)
             command = new SumCommand(result, jsonObject["value"].toDouble());
         else if (jsonObject["command"].toString() == "MultiplicationCommand")
             command = new MultiplicationCommand(result, jsonObject["value"].toDouble());
-        else if (jsonObject["command"].toString() == "DivisionCommand")
-            command = new DivisionCommand(result, jsonObject["value"].toDouble());
 
         if (command)
             commandStack->addCommand(command);
@@ -90,8 +87,6 @@ void SessionLoader::saveSession(CommandStack *commandStack)
             jsonObject.insert("command", QJsonValue("SumCommand"));
         else if (dynamic_cast<MultiplicationCommand *>(command))
             jsonObject.insert("command", QJsonValue("MultiplicationCommand"));
-        else if (dynamic_cast<DivisionCommand *>(command))
-            jsonObject.insert("command", QJsonValue("DivisionCommand"));
 
         jsonObject.insert("value", QJsonValue(command->value()));
 

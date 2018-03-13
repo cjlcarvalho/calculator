@@ -6,13 +6,16 @@ CommandStack::CommandStack()
     clear();
 }
 
-void CommandStack::addCommand(Command *command)
+CommandStack::~CommandStack()
 {
-    if (!m_commands.isEmpty()) {
-        while (m_commands.size() > m_top) {
-            delete m_commands.last();
-            m_commands.removeLast();
-        }
+    qDeleteAll(m_commands);
+}
+
+void CommandStack::addCommand(Command *command)
+{   
+    while (m_commands.size() > m_top) {
+        delete m_commands.last();
+        m_commands.removeLast();
     }
 
     m_commands << command;
