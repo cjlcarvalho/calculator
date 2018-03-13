@@ -32,8 +32,7 @@ bool CommandStack::undoCommand()
 bool CommandStack::redoCommand()
 {
     if (m_top < m_commands.size()) {
-        m_commands.at(m_top)->redo();
-        m_top++;
+        m_commands.at(m_top++)->redo();
         return true;
     }
     return false;
