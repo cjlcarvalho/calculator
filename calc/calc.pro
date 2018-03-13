@@ -25,10 +25,21 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+    result.cpp \
+    commands/sumcommand.cpp \
+    commands/commandstack.cpp \
+    commands/divisioncommand.cpp \
+    commands/multiplicationcommand.cpp
 
 HEADERS += \
-        mainwindow.h
+        mainwindow.h \
+    result.h \
+    commands/command.h \
+    commands/sumcommand.h \
+    commands/commandstack.h \
+    commands/divisioncommand.h \
+    commands/multiplicationcommand.h
 
 FORMS += \
         mainwindow.ui

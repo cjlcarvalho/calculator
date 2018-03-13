@@ -1,11 +1,20 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "result.h"
+#include "commands/command.h"
+#include "commands/commandstack.h"
+#include "commands/sumcommand.h"
+#include "commands/divisioncommand.h"
+#include "commands/multiplicationcommand.h"
 
+#include <QDebug>
 #include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    m_result(new Result(0.0)),
+    m_commandStack(new CommandStack)
 {
     ui->setupUi(this);
     init();
@@ -20,7 +29,8 @@ void MainWindow::init()
 {
     setWindowTitle("Calculadora");
 
-    ui->resultado->setText("0");
+    ui->resultado->setText(m_result->toString());
+    ui->valorAtual->setText("");
 
     connect(ui->botao1, &QPushButton::clicked, this, &MainWindow::adicionarValor);
     connect(ui->botao2, &QPushButton::clicked, this, &MainWindow::adicionarValor);
@@ -32,19 +42,28 @@ void MainWindow::init()
     connect(ui->botao8, &QPushButton::clicked, this, &MainWindow::adicionarValor);
     connect(ui->botao9, &QPushButton::clicked, this, &MainWindow::adicionarValor);
     connect(ui->botao0, &QPushButton::clicked, this, &MainWindow::adicionarValor);
+    connect(ui->botaoDot, &QPushButton::clicked, this, &MainWindow::adicionarValor);
 
     connect(ui->opSoma, &QPushButton::clicked, this, &MainWindow::executarSoma);
     connect(ui->opSub, &QPushButton::clicked, this, &MainWindow::executarSubtracao);
     connect(ui->opDiv, &QPushButton::clicked, this, &MainWindow::executarDivisao);
     connect(ui->opMult, &QPushButton::clicked, this, &MainWindow::executarMultiplicacao);
+
+    connect(ui->botaoUndo, &QPushButton::clicked, this, &MainWindow::undoOperation);
+    connect(ui->botaoRedo, &QPushButton::clicked, this, &MainWindow::redoOperation);
 }
 
 void MainWindow::adicionarValor()
 {
     QPushButton *button = dynamic_cast<QPushButton *>(sender());
 
-    if (button)
-        ui->valorAtual->setText(ui->valorAtual->toPlainText() + button->text());
+    if (button) {
+        QString buttonName = button->objectName().mid(5, button->objectName().size() - 5);
+        if (buttonName == "Dot")
+            ui->valorAtual->setText(ui->valorAtual->toPlainText() + ".");
+        else
+            ui->valorAtual->setText(ui->valorAtual->toPlainText() + buttonName);
+    }
 }
 
 void MainWindow::executarSoma()
@@ -52,14 +71,15 @@ void MainWindow::executarSoma()
     if(!checarValorAtual())
         return;
 
-    int numValorAtual = ui->valorAtual->toPlainText().toInt();
-    int numResultado = ui->resultado->toPlainText().toInt();
+    double numValorAtual = ui->valorAtual->toPlainText().toDouble();
 
-    ui->valorAtual->setText(QStringLiteral());
+    m_result->add(numValorAtual);
 
-    ui->resultado->setText(QString::number(numValorAtual + numResultado));
+    ui->valorAtual->setText(QString());
 
-    // guardar no command
+    ui->resultado->setText(m_result->toString());
+
+    m_commandStack->addCommand(new SumCommand(m_result, numValorAtual));
 }
 
 void MainWindow::executarSubtracao()
@@ -67,14 +87,15 @@ void MainWindow::executarSubtracao()
     if(!checarValorAtual())
         return;
 
-    int numValorAtual = ui->valorAtual->toPlainText().toInt();
-    int numResultado = ui->resultado->toPlainText().toInt();
+    double numValorAtual = ui->valorAtual->toPlainText().toDouble();
 
-    ui->valorAtual->setText(QStringLiteral());
+    m_result->add(-numValorAtual);
 
-    ui->resultado->setText(QString::number(numResultado - numValorAtual));
+    ui->valorAtual->setText(QString());
 
-    // guardar no command
+    ui->resultado->setText(m_result->toString());
+
+    m_commandStack->addCommand(new SumCommand(m_result, -numValorAtual));
 }
 
 void MainWindow::executarDivisao()
@@ -82,7 +103,7 @@ void MainWindow::executarDivisao()
     if(!checarValorAtual())
         return;
 
-    int numValorAtual = ui->valorAtual->toPlainText().toInt();
+    double numValorAtual = ui->valorAtual->toPlainText().toDouble();
 
     if (!numValorAtual) {
         QMessageBox messageBox;
@@ -92,13 +113,13 @@ void MainWindow::executarDivisao()
         return;
     }
 
-    int numResultado = ui->resultado->toPlainText().toInt();
+    m_result->divide(numValorAtual);
 
-    ui->valorAtual->setText(QStringLiteral());
+    ui->valorAtual->setText(QString());
 
-    ui->resultado->setText(QString::number(numResultado / numValorAtual));
+    ui->resultado->setText(m_result->toString());
 
-    // guardar no command
+    m_commandStack->addCommand(new DivisionCommand(m_result, numValorAtual));
 }
 
 void MainWindow::executarMultiplicacao()
@@ -106,24 +127,50 @@ void MainWindow::executarMultiplicacao()
     if(!checarValorAtual())
         return;
 
-    int numValorAtual = ui->valorAtual->toPlainText().toInt();
-    int numResultado = ui->resultado->toPlainText().toInt();
+    double numValorAtual = ui->valorAtual->toPlainText().toDouble();
 
-    ui->valorAtual->setText(QStringLiteral());
+    m_result->multiply(numValorAtual);
 
-    ui->resultado->setText(QString::number(numResultado * numValorAtual));
+    ui->valorAtual->setText(QString());
 
-    // guardar no command
+    ui->resultado->setText(m_result->toString());
+
+    m_commandStack->addCommand(new MultiplicationCommand(m_result, numValorAtual));
 }
 
 bool MainWindow::checarValorAtual()
 {
-    if (ui->valorAtual->toPlainText() == "") {
+    if (ui->valorAtual->toPlainText() == QString()) {
         QMessageBox messageBox;
         messageBox.setWindowTitle("Erro!");
         messageBox.setText("Por favor, preencha o seu valor atual antes de realizar uma operação.");
         messageBox.exec();
         return false;
     }
+
     return true;
+}
+
+void MainWindow::undoOperation()
+{
+    if (!m_commandStack->undoCommand()) {
+        QMessageBox messageBox;
+        messageBox.setWindowTitle("Fim da pilha!");
+        messageBox.setText("Você chegou no fim da sua pilha de comandos!");
+        messageBox.exec();
+    }
+
+    ui->resultado->setText(m_result->toString());
+}
+
+void MainWindow::redoOperation()
+{
+    if (!m_commandStack->redoCommand()) {
+        QMessageBox messageBox;
+        messageBox.setWindowTitle("Não há mais comandos!");
+        messageBox.setText("Não existem mais comandos para serem refeitos!");
+        messageBox.exec();
+    }
+
+    ui->resultado->setText(m_result->toString());
 }

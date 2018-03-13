@@ -7,6 +7,9 @@ namespace Ui {
 class MainWindow;
 }
 
+class Result;
+class CommandStack;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -21,6 +24,8 @@ public slots:
     void executarSubtracao();
     void executarDivisao();
     void executarMultiplicacao();
+    void undoOperation();
+    void redoOperation();
 
 private:
     void init();
@@ -28,6 +33,9 @@ private:
 
 private:
     Ui::MainWindow *ui;
+    Result *m_result;
+    CommandStack *m_commandStack;
+
 };
 
 #endif // MAINWINDOW_H
