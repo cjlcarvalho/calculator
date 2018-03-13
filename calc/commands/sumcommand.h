@@ -3,8 +3,6 @@
 
 #include "command.h"
 
-#include <QtGlobal>
-
 class Result;
 
 class SumCommand : public Command
