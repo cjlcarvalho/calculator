@@ -193,6 +193,7 @@ void MainWindow::loadSession()
 
     // m_commandStack top is set to 0
     // so, do redoCommand until the end of m_commandStack
+
     while (m_commandStack->redoCommand()) { }
 
     ui->resultado->setText(m_result->toString());

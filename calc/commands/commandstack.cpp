@@ -13,10 +13,8 @@ CommandStack::~CommandStack()
 
 void CommandStack::addCommand(Command *command)
 {   
-    while (m_commands.size() > m_top) {
-        delete m_commands.last();
-        m_commands.removeLast();
-    }
+    qDeleteAll(m_commands.begin() + m_top, m_commands.end());
+    m_commands.erase(m_commands.begin() + m_top, m_commands.end());
 
     m_commands << command;
     m_top++;
@@ -28,6 +26,7 @@ bool CommandStack::undoCommand()
         m_commands.at(--m_top)->undo();
         return true;
     }
+
     return false;
 }
 
@@ -37,6 +36,7 @@ bool CommandStack::redoCommand()
         m_commands.at(m_top++)->redo();
         return true;
     }
+
     return false;
 }
 
